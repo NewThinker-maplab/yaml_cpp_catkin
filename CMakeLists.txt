@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(yaml_cpp_catkin)
 
-find_package(catkin_simple REQUIRED)
+find_package(catkin_simple)
+# set(CMAKE_FIND_DEBUG_MODE TRUE)
+# find_package(catkin_simple REQUIRED NO_CMAKE_FIND_ROOT_PATH)
+# set(CMAKE_FIND_DEBUG_MODE FALSE)
+
 catkin_simple()
 
 include(ExternalProject)
@@ -11,12 +15,14 @@ set(YAML_CPP_TAG 11607eb5bf1258641d80f7051e7cf09e317b4746)
 
 file(MAKE_DIRECTORY ${CATKIN_DEVEL_PREFIX}/include)
 
+
 ExternalProject_Add(yaml_cpp_src
   GIT_REPOSITORY  https://github.com/jbeder/yaml-cpp
   GIT_TAG ${YAML_CPP_TAG}
   UPDATE_COMMAND ""
-  PATCH_COMMAND patch -p0 < ${CMAKE_SOURCE_DIR}/extra_version.patch
-  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CATKIN_DEVEL_PREFIX} -DBUILD_SHARED_LIBS=ON
+  # PATCH_COMMAND patch -p0 < ${CMAKE_SOURCE_DIR}/extra_version.patch
+  PATCH_COMMAND patch -p1 < ${CMAKE_SOURCE_DIR}/extra_version_new.patch
+  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${CATKIN_DEVEL_PREFIX} -DBUILD_SHARED_LIBS=ON -DCMAKE_TOOLCHAIN_FILE:STRING=${CMAKE_TOOLCHAIN_FILE} -DCATKIN_DEVEL_PREFIX:PATH=${CATKIN_DEVEL_PREFIX}
 )
 
 install(DIRECTORY ${CATKIN_DEVEL_PREFIX}/include/yaml-cpp
